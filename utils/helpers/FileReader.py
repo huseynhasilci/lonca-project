@@ -1,5 +1,12 @@
 """Reading the xml file."""
 import xml.etree.ElementTree as ET
+
+from constants.ApplicationConstants import (
+    KUMAS_BILGISI,
+    URUN_OLCULERI,
+    MODEL_OLCULERI,
+    MODELIN_UZERI
+)
 from bs4 import BeautifulSoup
 
 
@@ -24,13 +31,13 @@ class ReadFromHTMLTags:
                 strong_text = li.find("strong").text.strip() if li.find("strong") else ""
                 remaining_text = li.get_text(strip=True).replace(strong_text, "").strip()
                 
-                if 'Kumaş Bilgisi' in strong_text:
+                if KUMAS_BILGISI in strong_text:
                     document_dict['fabric'] = remaining_text
-                elif 'Ürün Ölçüleri' in strong_text:
+                elif URUN_OLCULERI in strong_text:
                     document_dict['product_measurements'] = remaining_text
-                elif 'Model Ölçüleri' in strong_text:
+                elif MODEL_OLCULERI in strong_text:
                     document_dict['model_measurements'] = remaining_text
-                elif 'Modelin üzerindeki' in remaining_text:
+                elif MODELIN_UZERI in remaining_text:
                     document_dict['sample_size'] = strong_text
 
         return document_dict

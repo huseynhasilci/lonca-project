@@ -2,7 +2,13 @@
 from utils.helpers.FileReader import ReadFromHTMLTags
 
 from constants.ApplicationConstants import (
-    PRODUCT_KEYWORD
+    PRODUCT_KEYWORD,
+    DISCOUNTED_PRICE_KEYWORD,
+    PRODUCT_TYPE_KEYWORD,
+    PRICE_UNIT_KEYWORD,
+    DESCRIPTION_KEYWORD,
+    IMAGE_PATH,
+    PRODUCT_DETAIL_PATH,
 )
 
 
@@ -15,7 +21,7 @@ class DocumentOrganizer:
 
 
     def orginze_document(self):
-        products = self.root.findall('Product')
+        products = self.root.findall(PRODUCT_KEYWORD)
 
         for product in products:
             document_dict = {}
@@ -29,20 +35,20 @@ class DocumentOrganizer:
             document_dict['stock_code'] = product_id
             document_dict['name'] = name
 
-            images = [image.get('Path') for image in product.findall('./Images/Image')]
+            images = [image.get('Path') for image in product.findall(IMAGE_PATH)]
 
             document_dict['images'] = images
 
-            product_details = product.findall('./ProductDetails/ProductDetail')
+            product_details = product.findall(PRODUCT_DETAIL_PATH)
 
             for item in product_details:
                 key = item.get('Name')
 
-                if key == 'DiscountedPrice':
+                if key == DISCOUNTED_PRICE_KEYWORD:
                     key = 'discounted_price'
-                elif key == 'ProductType':
+                elif key == PRODUCT_TYPE_KEYWORD:
                     key = 'product_type'
-                elif key == 'PriceUnit':
+                elif key == PRICE_UNIT_KEYWORD:
                     key = 'price_unit' 
                 else:
                     key = key.lower()
@@ -61,7 +67,7 @@ class DocumentOrganizer:
             document_dict['is_discounted'] = is_discounted
             document_dict['status'] = status
 
-            product_description = product.find('Description').text
+            product_description = product.find(DESCRIPTION_KEYWORD).text
 
             document_dict = self.html_tag_obj.scrape_from_html_form(product_description, document_dict)
 
